@@ -7,13 +7,18 @@ class LinearRegression:
     b: float
 
     def __init__(self):
-        raise NotImplementedError()
+        self.w = None
+        self.b = None
 
     def fit(self, X, y):
-        raise NotImplementedError()
+        X = np.hstack([np.ones((X.shape[0], 1)), X])
+        coeffs = np.linalg.pinv(X.T @ X) @ X.T @ y
+        self.b = coeffs[0]
+        self.w = coeffs[1:]
 
     def predict(self, X):
-        raise NotImplementedError()
+        X = np.hstack([np.ones((X.shape[0], 1)), X])
+        return X @ np.hstack([self.b, self.w])
 
 
 class GradientDescentLinearRegression(LinearRegression):
@@ -21,10 +26,20 @@ class GradientDescentLinearRegression(LinearRegression):
     A linear regression model that uses gradient descent to fit the model.
     """
 
+    def __init__(self):
+        self.coeffs = None
+
     def fit(
         self, X: np.ndarray, y: np.ndarray, lr: float = 0.01, epochs: int = 1000
     ) -> None:
-        raise NotImplementedError()
+        X = np.hstack([np.ones((X.shape[0], 1)), X])
+        y = y.reshape(-1, 1)
+        self.coeffs = np.zeros((X.shape[1], 1))
+        for i in range(epochs):
+            y_pred = X @ self.coeffs
+            er_pred = y - y_pred
+            par_diff = -2 * (X.T @ er_pred) / X.shape[0]
+            self.coeffs = self.coeffs - par_diff * lr
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
@@ -37,4 +52,6 @@ class GradientDescentLinearRegression(LinearRegression):
             np.ndarray: The predicted output.
 
         """
-        raise NotImplementedError()
+        X = np.hstack([np.ones((X.shape[0], 1)), X])
+        y_pred = X @ self.coeffs
+        return y_pred

@@ -44,7 +44,7 @@ def main():
     """
     # Get the data:
     X_train, X_test, y_train, y_test = get_housing_data()
-
+    print(y_test)
     # Create a linear regression model:
     lr = LinearRegression()
 
@@ -59,3 +59,6 @@ def main():
 
     # Print the mean squared error:
     print("Mean squared error: {:.2f}".format(mse))
+
+get_housing_data()
+main()
